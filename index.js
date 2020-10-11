@@ -1,20 +1,18 @@
 const video = document.getElementById('video')
 
+function startVideo() {
+    navigator.mediaDevices.getUserMedia({ video: true })
+        .then(stream => video.srcObject = stream)
+        .catch(error => console.error(error))
+}
+
 Promise.all([
     faceapi.nets.tinyFaceDetector.loadFromUri('/weights'),
     faceapi.nets.faceLandmark68Net.loadFromUri('/weights'),
     faceapi.nets.faceRecognitionNet.loadFromUri('/weights'),
     faceapi.nets.faceExpressionNet.loadFromUri('/weights'),
     faceapi.nets.ageGenderNet.loadFromUri('/weights')
-]).then(startVideo)
-
-function startVideo() {
-    navigator.getUserMedia(
-        { video: {} },
-        stream => video.srcObject = stream,
-        err => console.error(err)
-    )
-}
+]).then(startVideo).catch(err => console.log(err))
 
 video.addEventListener('play', () => {
     const canvas = faceapi.createCanvasFromMedia(video)
